@@ -1,8 +1,9 @@
 package com.jgodort.koindemo
 
-import org.koin.dsl.ModuleDeclaration
+import com.google.gson.Gson
 import org.koin.dsl.module
 
-val applicationModule= module {
-
+val applicationModule = module {
+  single { Gson() }
+  factory { CurrenciesAdapter() }
 }
