@@ -1,4 +1,4 @@
-package com.jgodort.koindemo
+package com.jgodort.koindemo.model
 
 data class Currency(
     val id: Int,
