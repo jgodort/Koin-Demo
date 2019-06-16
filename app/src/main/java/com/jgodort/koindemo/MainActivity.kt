@@ -1,19 +1,25 @@
 package com.jgodort.koindemo
 
-import android.arch.lifecycle.Observer
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.LinearLayoutManager
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.jgodort.koindemo.presentation.CurrenciesAdapter
 import com.jgodort.koindemo.presentation.CurrenciesViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.android.ext.android.inject
 import org.koin.android.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 
 class MainActivity : AppCompatActivity() {
 
     val currenciesAdapter: CurrenciesAdapter by inject()
-    val currenciesViewModel: CurrenciesViewModel by viewModel()
+    val currenciesViewModel: CurrenciesViewModel by viewModel {
+        val currenciesJson = resources.openRawResource(R.raw.currencies)
+            .bufferedReader().use { it.readText() }
+        parametersOf(currenciesJson)
+
+    }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -22,11 +28,10 @@ class MainActivity : AppCompatActivity() {
         setupCurrenciesRecycler()
 
         currenciesViewModel.currenciesLiveData.observe(this, Observer {
-            currenciesAdapter.currencies=it!!
+            currenciesAdapter.currencies = it!!
         })
-        val currenciesJson = resources.openRawResource(R.raw.currencies)
-            .bufferedReader().use { it.readText() }
-        currenciesViewModel.retrieveCurrencies(currenciesJson)
+
+        currenciesViewModel.retrieveCurrencies()
     }
 
     private fun setupCurrenciesRecycler() {
